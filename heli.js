@@ -119,7 +119,7 @@ function Heli(px, py) {
 	// ivars
 	this.cColor = '#00F'; // chopper color
 	this.velocity = {x: 0, y: 0};
-	this.maxVelocity = {x: 2, y: 2};
+	this.maxVelocity = {x: 1, y: 1};
 	
 	// call super constructer
 	Rect.prototype.constructor.call(this, px, py, 20, 20);
@@ -133,13 +133,13 @@ function Heli(px, py) {
 	
 	// apply upward force to the chopper
 	this.lift = function() {
-		this.velocity.y -= .1;
+		this.velocity.y -= .08;
 		this.capV();
 	}
 	
 	// pull downward (gravity)
 	this.fall = function() {
-		this.velocity.y += .03;
+		this.velocity.y += .02;
 		this.capV();
 	}
 	
@@ -174,14 +174,6 @@ function ScorePanel(p_width, p_height, p_offset, p_maxScore) {
 		canvas.fillRect(0, this.offset, this.w, this.h);
 		
 		// draw text
-		canvas.shadowOffsetX = 2;
-		canvas.shadowOffsetY = 2;
-		canvas.shadowBlur    = 4;
-		canvas.shadowColor   = 'rgba(0, 0, 0, 0.5)';
-		canvas.fillStyle     = '#00f';
-		
-		context.font         = 'bold 30px sans-serif';
-		context.textBaseline = 'top';
 		context.strokeText('Hello world!', this.offest, 10);
 	}
 }
