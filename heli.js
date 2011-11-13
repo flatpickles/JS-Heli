@@ -160,7 +160,7 @@ function Heli(px, py) {
 function ScorePanel(p_width, p_height, p_offset, p_maxScore) {
 	// constants
 	this.bColor = '#BCD';
-	this.tColor = '#0F0';
+	this.tColor = '#444';
 	
 	// ivars
 	this.w = p_width;
@@ -168,13 +168,27 @@ function ScorePanel(p_width, p_height, p_offset, p_maxScore) {
 	this.offset = p_offset;
 	this.currScore = 0;
 	this.maxScore = p_maxScore;
+	this.notification
 	
 	this.draw = function(canvas) {
 		canvas.fillStyle = this.bColor; // background color
 		canvas.fillRect(0, this.offset, this.w, this.h);
 		
-		// draw text
-		context.strokeText('Hello world!', this.offest, 10);
+		// draw current
+		canvas.fillStyle = this.tColor;
+	    canvas.font = (this.h - 13) + "pt Calibri";
+		canvas.textBaseline = "middle"
+		canvas.textAlign = "left";
+		canvas.fillText(this.currScore, 10, this.offset + this.h / 2);
+		
+		// draw max
+		canvas.textAlign = "right";
+		canvas.fillText("High score: " + this.maxScore, this.w - 10, this.offset + this.h / 2);
+	}
+	
+	this.incScore = function() {
+		this.currScore += 1;
+		if (this.maxScore < this.currScore) this.maxScore = this.currScore;
 	}
 }
 
@@ -188,6 +202,7 @@ var scorePanel;
 // game vars
 var paused = true;
 var pauseTriggered = false;
+var highScore = 0;
 
 // key manipulation
 var keys = {}
@@ -197,7 +212,8 @@ document.onkeyup = function(e) { keys[e.which] = false }
 function newGame(width, height) {
 	paused = true;
 	tunnel = new Tunnel(width, height - 30);
-	scorePanel = new ScorePanel(width, 30, height - 30);
+	if (scorePanel) highScore = scorePanel.maxScore;
+	scorePanel = new ScorePanel(width, 30, height - 30, highScore);
 	player = new Heli(40, height/2 - 10);
 }
 
@@ -220,9 +236,12 @@ function update(c) {
 	// move tunnel
 	tunnel.move();
 	
-	
+	// update player
 	player.fall();
 	player.update();
+	
+	// increment score
+	scorePanel.incScore();
 	
 	// check for collisions
 	if (tunnel.checkCollision(player)) {
