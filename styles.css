@@ -1,0 +1,17 @@
+body {
+	background-color: #ABC;
+	text-align: center;
+}
+
+#header {
+	font-size: 2.5em;
+	color: #EEE;
+	text-shadow: black 0.05em 0.05em 0.1em;
+	font-weight: bold;
+}
+
+#description {
+	font-size: 1.3em;
+	color: #567;
+	padding: 20px;
+}
