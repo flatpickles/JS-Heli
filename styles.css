@@ -1,12 +1,15 @@
+@import url(http://fonts.googleapis.com/css?family=Fondamento);
+
 body {
 	background-color: #ABC;
 	text-align: center;
+	font-family: 'Fondamento', cursive;
 }
 
 #header {
-	font-size: 2.5em;
+	font-size: 3em;
 	color: #EEE;
-	text-shadow: black 0.05em 0.05em 0.1em;
+	text-shadow: #567 0.03em 0.03em 0.1em;
 	font-weight: bold;
 }
 
@@ -14,4 +17,13 @@ body {
 	font-size: 1.3em;
 	color: #567;
 	padding: 20px;
+}
+
+.footer {
+	color: #789;
+	text-decoration: none;
+}
+
+a.footer:hover {
+	text-decoration: underline;
 }

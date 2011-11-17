@@ -46,7 +46,7 @@ function Tunnel(pw, ph) {
 		// move things, wrap if needed
 		for (var i = 0; i < this.rects.length; i++) {
 			currRect = this.rects[i];
-			currRect.x -= 1;
+			currRect.x -= 2;
 			if (currRect.x < -this.resolution) {
 				wrapped = true
 				currRect.x += this.w + this.resolution;
@@ -160,7 +160,7 @@ function Heli(px, py) {
 function ScorePanel(p_width, p_height, p_offset, p_maxScore) {
 	// constants
 	this.bColor = '#BCD';
-	this.tColor = '#444';
+	this.tColor = '#567';
 	
 	// ivars
 	this.w = p_width;
@@ -176,18 +176,18 @@ function ScorePanel(p_width, p_height, p_offset, p_maxScore) {
 		
 		// draw current
 		canvas.fillStyle = this.tColor;
-	    canvas.font = (this.h - 13) + "pt Calibri";
+	    canvas.font = (this.h - 13) + "pt Fondamento";
 		canvas.textBaseline = "middle"
 		canvas.textAlign = "left";
-		canvas.fillText(this.currScore, 10, this.offset + this.h / 2);
+		canvas.fillText(Math.floor(this.currScore), 10, this.offset + this.h / 2);
 		
 		// draw max
 		canvas.textAlign = "right";
-		canvas.fillText("High score: " + this.maxScore, this.w - 10, this.offset + this.h / 2);
+		canvas.fillText(Math.floor(this.maxScore), this.w - 10, this.offset + this.h / 2);
 	}
 	
 	this.incScore = function() {
-		this.currScore += 1;
+		this.currScore += .03;
 		if (this.maxScore < this.currScore) this.maxScore = this.currScore;
 	}
 }
@@ -264,5 +264,5 @@ window.onload = function() {
 	setInterval(function() {
 		update(c);
 		draw(c);
-	}, 1000 / 150);
+	}, 1000 / 75);
 }
