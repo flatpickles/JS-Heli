@@ -17,6 +17,10 @@ function Tunnel(pw, ph) {
 	this.wColor = '#ABC'; // wall color
 	this.bColor = '#EEE'; // background color
 	this.startingGap = .5; // starting ratio of gap to height
+	this.obstacles = new Array();
+	this.maxObSize = 30;
+	this.minObSize = 10;
+	this.obWidth = 20;
 	
 	// ivars
 	this.h;
@@ -63,6 +67,11 @@ function Tunnel(pw, ph) {
 		// if it's been wrapped, update the angle and offset again
 		if (wrapped) {
 			this.updateOffset();
+		}
+		// deal with some obstacles
+		
+		if (this.obstacles.length < 3 && Math.random() < .2) {
+			
 		}
 	}
 	
@@ -139,7 +148,7 @@ function Heli(px, py) {
 	
 	// pull downward (gravity)
 	this.fall = function() {
-		this.velocity.y += .02;
+		this.velocity.y += .03;
 		this.capV();
 	}
 	
