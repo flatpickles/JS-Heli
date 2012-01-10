@@ -254,19 +254,14 @@ var paused = true;
 var pauseTriggered = false;
 var highScore = 0;
 
-// key manipulation
+// key and mouse manipulation
 var keys = {}
 var mouseDown = false;
-document.onkeydown = function(e) { keys[e.which] = true; }
-document.onkeyup = function(e) { keys[e.which] = false; }
-document.onmousedown = function() { 
-	mouseDown = true; 
-	return false; // so we don't select stuff on the page
-}
-document.onmouseup = function() { 
-	mouseDown = false;
-	return false;
-}
+document.onkeydown = function(e) { keys[e.which] = true; return false; }
+document.onkeyup = function(e) { keys[e.which] = false; return false; }
+document.onmousedown = function() { mouseDown = true; return false; }
+document.onmouseup = function() { mouseDown = false; return false; }
+// return false so we're not selecting stuff or doing other key input
 
 function newGame(width, height) {
 	paused = true;
