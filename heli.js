@@ -15,20 +15,26 @@ function Tunnel(pw, ph) {
 	this.maxA = .6; // greatest slope of walls
 	this.maxAVar = .05; // maximum angle variance between steps
 	this.wColor = '#ABC'; // wall color
+	this.oColor = '#9AB'; // obstacle color
 	this.bColor = '#EEE'; // background color
 	this.startingGap = .5; // starting ratio of gap to height
-	this.obstacles = new Array();
-	this.maxObSize = 30;
-	this.minObSize = 10;
+	this.maxObCoeff = 3;
+	this.minObSize = 23;
 	this.obWidth = 20;
+	this.obDist = 100;
+	this.obDistVar = 50;
 	
 	// ivars
 	this.h;
 	this.w;
 	this.rects;
+	this.obstacles = new Array();
 	this.currGap;
 	this.currOffset;
 	this.currAngle;
+	this.lastTopRect;
+	this.sinceLastOb = 0;
+	this.obDistNext = 0;
 	
 	this.updateOffset = function() {
 		// adjust angle
@@ -57,6 +63,7 @@ function Tunnel(pw, ph) {
 				if (currRect.y == 0) {
 					// it's the upper tunnel
 					currRect.h = this.currOffset;
+					if (currRect.x >= this.w - this.resolution) this.lastTopRect = currRect;
 				} else {
 					// it's the lower
 					currRect.y = this.currOffset + this.currGap;
@@ -68,15 +75,35 @@ function Tunnel(pw, ph) {
 		if (wrapped) {
 			this.updateOffset();
 		}
-		// deal with some obstacles
 		
-		if (this.obstacles.length < 3 && Math.random() < .2) {
-			
+		// deal with some obstacles
+		for (var i = 0; i < this.obstacles.length; i++) {
+			currObs = this.obstacles[i];
+			currObs.x -= 2;
+			if (currObs.x < -this.minObSize) {
+				// remove it
+				pos = this.obstacles.indexOf(currObs);
+				this.obstacles.splice(pos, pos + 1);
+			}
+		}
+		
+		
+		// make new obstacles
+		this.sinceLastOb++;
+		if (this.lastTopRect && this.sinceLastOb > this.obDistNext) {
+			newH = this.minObSize * (1 + parseInt(Math.random() * this.maxObCoeff));
+			newY = this.lastTopRect.h; // height of the last top one
+			newY += (this.currGap - newH) * Math.random();
+			newObs = new Rect(this.w, newY, this.minObSize, newH);
+			this.obstacles.push(newObs);
+			this.sinceLastOb = 0;
+			this.obDistNext = this.obDist + (Math.random() * 2 * this.obDistVar - this.obDistVar);
 		}
 	}
 	
 	// check if player overlaps
 	this.checkCollision = function(a) {
+		// check walls
 		for (var i = 0; i < this.rects.length; i++) {
 			b = this.rects[i];
 			if (a.x < b.x + b.w && a.x + a.w > b.x &&
@@ -84,7 +111,15 @@ function Tunnel(pw, ph) {
 				return true;
 			}
 		}
-		return false; // we got through okeay
+		// check obstacles
+		for (var i = 0; i < this.obstacles.length; i++) {
+			b = this.obstacles[i];
+			if (a.x < b.x + b.w && a.x + a.w > b.x &&
+			   a.y < b.y + b.h && a.y + a.h > b.y) {
+				return true;
+			}
+		}
+		return false; // we got through okay
 	}
 	
 	// draw the tunnel to the passed in canvas
@@ -92,6 +127,12 @@ function Tunnel(pw, ph) {
 		// draw backround
 		canvas.fillStyle = this.bColor; // background color
 		canvas.fillRect(0, 0, this.w, this.h);
+		// draw obstacles
+		canvas.fillStyle = this.oColor;
+		for (var i = 0; i < this.obstacles.length; i++) {
+			canvas.fillRect(this.obstacles[i].x, this.obstacles[i].y, this.obstacles[i].w, this.obstacles[i].h);
+		}
+		// draw walls
 		canvas.fillStyle = this.wColor;
 		for (var i = 0; i < this.rects.length; i++) {
 			canvas.fillRect(this.rects[i].x, this.rects[i].y, this.rects[i].w, this.rects[i].h);
@@ -128,7 +169,7 @@ function Heli(px, py) {
 	// ivars
 	this.cColor = '#00F'; // chopper color
 	this.velocity = {x: 0, y: 0};
-	this.maxVelocity = {x: 1, y: 1};
+	this.maxVelocity = {x: 1, y: 1.2};
 	
 	// call super constructer
 	Rect.prototype.constructor.call(this, px, py, 20, 20);
