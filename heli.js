@@ -256,8 +256,17 @@ var highScore = 0;
 
 // key manipulation
 var keys = {}
-document.onkeydown = function(e) { keys[e.which] = true }
-document.onkeyup = function(e) { keys[e.which] = false }
+var mouseDown = false;
+document.onkeydown = function(e) { keys[e.which] = true; }
+document.onkeyup = function(e) { keys[e.which] = false; }
+document.onmousedown = function() { 
+	mouseDown = true; 
+	return false; // so we don't select stuff on the page
+}
+document.onmouseup = function() { 
+	mouseDown = false;
+	return false;
+}
 
 function newGame(width, height) {
 	paused = true;
@@ -277,8 +286,8 @@ function update(c) {
 	}
 	
 	// apply lift
-	if (keys[32] && paused) paused = false;
-	else if (keys[32]) player.lift();
+	if ((keys[32] || mouseDown) && paused) paused = false;
+	else if (keys[32] || mouseDown) player.lift();
 	
 	// break out if paused
 	if (paused) return;
